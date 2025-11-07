@@ -12,7 +12,7 @@ COPY pyproject.toml .
 # 2) install deps into a local venv with uv
 #    --no-dev: we don't need dev deps in lambda
 #    --frozen: respect the lock if present
-RUN uv sync --no-dev --frozen
+RUN uv sync --no-dev
 
 # 3) copy your lambda code
 COPY handler.py .
