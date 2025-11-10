@@ -46,10 +46,8 @@ def exif_handler(event, context):
 
                     print(f"Processing: s3://{bucket_name}/{object_key}")
 
-                    # download image from S3
                     image = download_from_s3(bucket_name, object_key)
 
-                    # extract EXIF metadata
                     exif_data = {
                         'width': image.width,
                         'height': image.height,
@@ -57,7 +55,6 @@ def exif_handler(event, context):
                         'mode': image.mode
                     }
 
-                    # extract EXIF tags if available
                     if hasattr(image, 'getexif'):
                         exif = image.getexif()
                         if exif:
@@ -69,8 +66,7 @@ def exif_handler(event, context):
 
                     print(f"Extracted EXIF data: {json.dumps(exif_data, indent=2)}")
 
-                    # upload metadata to /processed/exif/ as JSON
-                    filename = Path(object_key).stem  # get filename without extension
+                    filename = Path(object_key).stem
                     output_key = f"processed/exif/{filename}.json"
                     upload_to_s3(
                         bucket_name,

@@ -34,10 +34,9 @@ def resize_handler(event, context):
     # iterate over all SNS records
     for sns_record in event.get('Records', []):
         try:
-            # extract and parse SNS message
+
             sns_message = json.loads(sns_record['Sns']['Message'])
 
-            # iterate over all S3 records in the SNS message
             for s3_event in sns_message.get('Records', []):
                 try:
                     s3_record = s3_event['s3']
@@ -46,15 +45,12 @@ def resize_handler(event, context):
 
                     print(f"Processing: s3://{bucket_name}/{object_key}")
 
-                    # download image from S3
                     image = download_from_s3(bucket_name, object_key)
                     print(f"Downloaded image: {image.size}")
 
-                    # resize to 512x512
                     resized_image = image.resize((512, 512), Image.Resampling.LANCZOS)
                     print(f"Resized to: {resized_image.size}")
 
-                    # upload to /processed/resize/<filename>
                     filename = Path(object_key).name
                     output_key = f"processed/resize/{filename}"
                     upload_to_s3(bucket_name, output_key, resized_image)
